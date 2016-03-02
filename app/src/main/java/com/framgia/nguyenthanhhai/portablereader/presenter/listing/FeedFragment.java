@@ -3,6 +3,7 @@ package com.framgia.nguyenthanhhai.portablereader.presenter.listing;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.ProgressBar;
 
 import com.framgia.nguyenthanhhai.portablereader.R;
 import com.framgia.nguyenthanhhai.portablereader.data.model.FeedItem;
+import com.framgia.nguyenthanhhai.portablereader.presenter.detail.DetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +93,7 @@ public class FeedFragment extends Fragment implements IFeedFragmentView {
     }
 
     @Override
-    public void onFeedClicked(FeedItem feedItem) {
-
+    public void onFeedClicked(View view, FeedItem feedItem) {
+        DetailActivity.navigate((AppCompatActivity) getActivity(), view.findViewById(R.id.image_feed), feedItem);
     }
 }

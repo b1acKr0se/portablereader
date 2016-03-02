@@ -1,6 +1,8 @@
 package com.framgia.nguyenthanhhai.portablereader.data.model;
 
-public class Category {
+import java.io.Serializable;
+
+public class Category implements Serializable {
     private int mId;
     private String mName;
 
