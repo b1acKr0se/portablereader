@@ -1,11 +1,12 @@
 package com.framgia.nguyenthanhhai.portablereader.data.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Model for a feed item
  */
-public class FeedItem {
+public class FeedItem implements Serializable {
     private int mId;
     private String mTitle;
     private String mDesc;
