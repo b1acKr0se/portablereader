@@ -1,6 +1,7 @@
 package com.framgia.nguyenthanhhai.portablereader.presenter.listing;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.Target;
 import com.framgia.nguyenthanhhai.portablereader.R;
 import com.framgia.nguyenthanhhai.portablereader.data.model.FeedItem;
 import com.framgia.nguyenthanhhai.portablereader.util.DateDifferenceConverter;
@@ -37,7 +43,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.feedItem = mFeedList.get(position);
         holder.itemView.setOnClickListener(holder);
         holder.titleTextView.setText(holder.feedItem.getTitle());
@@ -50,6 +56,19 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         holder.pubDateTextView.setText(DateDifferenceConverter.getDateDifference(holder.feedItem.getPubDate()));
         holder.descriptionTextView.setText(holder.feedItem.getDescription().replaceAll("\\s+", " "));
         Glide.with(mContext).load(holder.feedItem.getImage())
+                .listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        holder.descriptionTextView.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        holder.descriptionTextView.setVisibility(View.VISIBLE);
+                        return false;
+                    }
+                })
                 .into(holder.imageView);
     }
 

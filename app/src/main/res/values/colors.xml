@@ -7,4 +7,5 @@
     <color name="readTitle">#64000000</color>
     <color name="backgroundColor">#d2d0d0</color>
     <color name="transparent">#80000000</color>
+    <color name="spinner_text_color">#ff333333</color>
 </resources>

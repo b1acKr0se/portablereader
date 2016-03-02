@@ -21,7 +21,6 @@
             android:paddingEnd="@dimen/padding_16dp"
             android:paddingStart="@dimen/padding_16dp"
             android:paddingTop="@dimen/padding_16dp"
-            android:text="Astronaut Set to Return to Earth After Nearly a Year in Orbit"
             android:textColor="@color/unreadTitle"
             android:textSize="@dimen/title_size" />
 
@@ -37,7 +36,6 @@
                 android:id="@+id/text_author"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="webdesk@voanews.com (VOA News)"
                 android:textSize="@dimen/author_size" />
 
             <TextView
@@ -52,7 +50,6 @@
                 android:id="@+id/text_pub_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tue, 01 Mar 2016 12:53:37"
                 android:textSize="@dimen/author_size" />
 
         </LinearLayout>
@@ -76,8 +73,8 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:padding="@dimen/padding_8dp"
-                android:text="A cute video showing a robot dog playing with a real dog has gone viral. The robot, named Spot, was made by Google-owned Boston Dynamics. Most of the company’s robots are being developed for possible military use, but Spot didn't make the grade for military reconnaissance, so Google is now publicizing the device. In the video, Spot plays with a real dog, Alex. The terrier reportedly belongs to Andy Rubin, who co-founded mobile operating system Android and is now head of Playground Global. Alex barked and growled at Spot, which weighs 75 kilograms, 10 times as much as the real dog. The robot's human controller guided Spot to react warily and back away from the barking dog, which only encouraged Alex's ferocious display. Spot was designed as a potential military scout, able to navigate tough terrain and maintain its balance even when kicked. Based on Alex’s reaction, it looked as if Spot would not be a good canine companion, but the robot might have a future as a dog walker. Here are the videos:"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:visibility="gone" />
 
         </FrameLayout>
     </LinearLayout>
