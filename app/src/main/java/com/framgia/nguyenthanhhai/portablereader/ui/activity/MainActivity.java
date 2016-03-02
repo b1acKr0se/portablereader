@@ -1,7 +1,9 @@
-package com.framgia.nguyenthanhhai.portablereader;
+package com.framgia.nguyenthanhhai.portablereader.ui.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.framgia.nguyenthanhhai.portablereader.R;
 
 public class MainActivity extends AppCompatActivity {
 
