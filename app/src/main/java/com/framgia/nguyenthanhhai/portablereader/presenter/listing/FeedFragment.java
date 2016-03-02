@@ -16,11 +16,17 @@ import com.framgia.nguyenthanhhai.portablereader.data.model.FeedItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Subscription;
+
 public class FeedFragment extends Fragment implements IFeedFragmentView {
     static final String BUNDLE_URL = "BUNDLE_URL";
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
+    private FeedPresenter mFeedPresenter;
+    private Subscription mFeedSubscription;
+    private FeedAdapter mFeedAdapter;
     private List<FeedItem> mFeedList = new ArrayList<>();
+    private String mUrl;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -35,13 +41,36 @@ public class FeedFragment extends Fragment implements IFeedFragmentView {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mUrl = getArguments().getString(BUNDLE_URL);
+        mFeedPresenter = new FeedPresenter(this, mUrl);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_feed, container, false);
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mFeedAdapter = new FeedAdapter(getContext(), mFeedList, this);
+        mRecyclerView.setAdapter(mFeedAdapter);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mFeedSubscription = mFeedPresenter.displayFeed();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(mFeedSubscription != null && mFeedSubscription.isUnsubscribed()) {
+            mFeedSubscription.unsubscribe();
+        }
     }
 
     @Override
@@ -58,6 +87,7 @@ public class FeedFragment extends Fragment implements IFeedFragmentView {
     public void showFeedList(List<FeedItem> list) {
         mFeedList.clear();
         mFeedList.addAll(list);
+        mFeedAdapter.notifyDataSetChanged();
     }
 
     @Override

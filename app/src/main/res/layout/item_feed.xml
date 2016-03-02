@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?attr/selectableItemBackground"
+    android:elevation="@dimen/elevation"
+    android:layout_marginTop="@dimen/padding_8dp"
+    android:layout_marginStart="@dimen/padding_8dp"
+    android:layout_marginEnd="@dimen/padding_8dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/padding_16dp"
+            android:paddingStart="@dimen/padding_16dp"
+            android:paddingTop="@dimen/padding_16dp"
+            android:text="Astronaut Set to Return to Earth After Nearly a Year in Orbit"
+            android:textColor="@color/unreadTitle"
+            android:textSize="@dimen/title_size" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingEnd="@dimen/padding_16dp"
+            android:paddingStart="@dimen/padding_16dp"
+            android:paddingTop="@dimen/padding_8dp">
+
+            <TextView
+                android:id="@+id/text_author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="webdesk@voanews.com (VOA News)"
+                android:textSize="@dimen/author_size" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/padding_4dp"
+                android:paddingStart="@dimen/padding_4dp"
+                android:text="@string/bulletpoint"
+                android:textSize="@dimen/author_size" />
+
+            <TextView
+                android:id="@+id/text_pub_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tue, 01 Mar 2016 12:53:37"
+                android:textSize="@dimen/author_size" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_height"
+            android:layout_margin="@dimen/padding_16dp"
+            android:background="@color/dividerColor" />
+
+        <TextView
+            android:id="@+id/text_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="5"
+            android:paddingEnd="@dimen/padding_16dp"
+            android:paddingStart="@dimen/padding_16dp"
+            android:text="A cute video showing a robot dog playing with a real dog has gone viral. The robot, named Spot, was made by Google-owned Boston Dynamics. Most of the company’s robots are being developed for possible military use, but Spot didn't make the grade for military reconnaissance, so Google is now publicizing the device. In the video, Spot plays with a real dog, Alex. The terrier reportedly belongs to Andy Rubin, who co-founded mobile operating system Android and is now head of Playground Global. Alex barked and growled at Spot, which weighs 75 kilograms, 10 times as much as the real dog. The robot's human controller guided Spot to react warily and back away from the barking dog, which only encouraged Alex's ferocious display. Spot was designed as a potential military scout, able to navigate tough terrain and maintain its balance even when kicked. Based on Alex’s reaction, it looked as if Spot would not be a good canine companion, but the robot might have a future as a dog walker. Here are the videos:" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/padding_16dp"
+            android:paddingEnd="@dimen/padding_16dp"
+            android:paddingStart="@dimen/padding_16dp"
+            android:text="@string/ellipse" />
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

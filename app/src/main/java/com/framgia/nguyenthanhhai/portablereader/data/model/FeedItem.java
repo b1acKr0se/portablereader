@@ -13,6 +13,7 @@ public class FeedItem {
     private String mPubDate;
     private List<Category> mCategory;
     private String mAuthor;
+    private boolean mIsRead;
 
     public int getmId() {
         return mId;
@@ -70,11 +71,20 @@ public class FeedItem {
         this.mAuthor = mAuthor;
     }
 
+    public boolean isRead() {
+        return mIsRead;
+    }
+
+    public void setReadStatus(boolean read) {
+        this.mIsRead = read;
+    }
+
     public static class FeedItemBuilder {
         private final FeedItem mFeedItem;
 
         public FeedItemBuilder() {
             mFeedItem = new FeedItem();
+            mFeedItem.setReadStatus(false);
         }
 
         public FeedItemBuilder setId(int id) {
@@ -109,6 +119,11 @@ public class FeedItem {
 
         public FeedItemBuilder setAuthor(String author) {
             mFeedItem.setmAuthor(author);
+            return this;
+        }
+
+        public FeedItemBuilder setStatus(boolean read) {
+            mFeedItem.setReadStatus(read);
             return this;
         }
 
