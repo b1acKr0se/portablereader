@@ -20,7 +20,7 @@ public class Category {
         this.mName = mName;
     }
 
-    public class CategoryBuilder {
+    public static class CategoryBuilder {
         private Category mCategory;
 
         public CategoryBuilder() {
