@@ -24,6 +24,7 @@ public class XmlParser {
     public static final String TAG_PUBDATE = "pubDate";
     public static final String TAG_CATEGORY = "category";
     public static final String TAG_AUTHOR = "author";
+    public static final String TAG_ENCLOSURE = "enclosure";
     public static final String NAMESPACE = null;
 
     public static List<FeedItem> parse(String xml) throws XmlPullParserException, IOException {
@@ -68,6 +69,7 @@ public class XmlParser {
         String link = null;
         String pubDate = null;
         String author = null;
+        String image = null;
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
@@ -92,6 +94,9 @@ public class XmlParser {
                 case TAG_AUTHOR:
                     author = readAuthor(parser);
                     break;
+                case TAG_ENCLOSURE:
+                    image = readImageLink(parser);
+                    break;
                 default:
                     skip(parser);
             }
@@ -102,6 +107,7 @@ public class XmlParser {
                 .setLink(link)
                 .setCategory(categories)
                 .setPubDate(pubDate)
+                .setImage(image)
                 .setAuthor(author).build();
     }
 
@@ -161,6 +167,19 @@ public class XmlParser {
             parser.nextTag();
         }
         return result;
+    }
+
+    private static String readImageLink(XmlPullParser parser) throws IOException,
+            XmlPullParserException {
+        String link = "";
+        parser.require(XmlPullParser.START_TAG, NAMESPACE, TAG_ENCLOSURE);
+        String tag = parser.getName();
+        if (tag.equals(TAG_ENCLOSURE)) {
+            link = parser.getAttributeValue(null, "url");
+            parser.nextTag();
+        }
+        parser.require(XmlPullParser.END_TAG, NAMESPACE, TAG_ENCLOSURE);
+        return link;
     }
 
     private static void skip(XmlPullParser parser) throws XmlPullParserException,

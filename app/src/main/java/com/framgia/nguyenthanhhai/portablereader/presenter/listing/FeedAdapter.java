@@ -6,8 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.framgia.nguyenthanhhai.portablereader.R;
 import com.framgia.nguyenthanhhai.portablereader.data.model.FeedItem;
 import com.framgia.nguyenthanhhai.portablereader.util.DateDifferenceConverter;
@@ -38,15 +40,17 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.feedItem = mFeedList.get(position);
         holder.itemView.setOnClickListener(holder);
-        holder.titleTextView.setText(holder.feedItem.getmTitle());
+        holder.titleTextView.setText(holder.feedItem.getTitle());
         if(holder.feedItem.isRead()) {
             holder.titleTextView.setTextColor(textColorRead);
         } else {
             holder.titleTextView.setTextColor(textColorUnread);
         }
-        holder.authorTextView.setText(holder.feedItem.getmAuthor() == null ? "author not stated" : holder.feedItem.getmAuthor());
-        holder.pubDateTextView.setText(DateDifferenceConverter.getDateDifference(holder.feedItem.getmPubDate()));
-        holder.descriptionTextView.setText(holder.feedItem.getmDesc().replaceAll("\\s+", " "));
+        holder.authorTextView.setText(holder.feedItem.getAuthor() == null ? "author not stated" : holder.feedItem.getAuthor());
+        holder.pubDateTextView.setText(DateDifferenceConverter.getDateDifference(holder.feedItem.getPubDate()));
+        holder.descriptionTextView.setText(holder.feedItem.getDescription().replaceAll("\\s+", " "));
+        Glide.with(mContext).load(holder.feedItem.getImage())
+                .into(holder.imageView);
     }
 
     @Override
@@ -60,6 +64,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         private TextView authorTextView;
         private TextView pubDateTextView;
         private TextView descriptionTextView;
+        private ImageView imageView;
 
         public ViewHolder(View view) {
             super(view);
@@ -67,6 +72,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             authorTextView = (TextView) view.findViewById(R.id.text_author);
             pubDateTextView = (TextView) view.findViewById(R.id.text_pub_date);
             descriptionTextView = (TextView) view.findViewById(R.id.text_desc);
+            imageView = (ImageView) view.findViewById(R.id.image_feed);
         }
 
         @Override

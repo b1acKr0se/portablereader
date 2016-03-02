@@ -13,62 +13,71 @@ public class FeedItem {
     private String mPubDate;
     private List<Category> mCategory;
     private String mAuthor;
+    private String mImage;
     private boolean mIsRead;
 
-    public int getmId() {
+    public int getId() {
         return mId;
     }
 
-    public void setmId(int mId) {
+    public void setId(int mId) {
         this.mId = mId;
     }
 
-    public String getmTitle() {
+    public String getTitle() {
         return mTitle;
     }
 
-    public void setmTitle(String mTitle) {
+    public void setTitle(String mTitle) {
         this.mTitle = mTitle;
     }
 
-    public String getmDesc() {
+    public String getDescription() {
         return mDesc;
     }
 
-    public void setmDesc(String mDesc) {
+    public void setDescription(String mDesc) {
         this.mDesc = mDesc;
     }
 
-    public String getmLink() {
+    public String getLink() {
         return mLink;
     }
 
-    public void setmLink(String mLink) {
+    public void setLink(String mLink) {
         this.mLink = mLink;
     }
 
-    public String getmPubDate() {
+    public String getPubDate() {
         return mPubDate;
     }
 
-    public void setmPubDate(String mPubDate) {
+    public void setPubDate(String mPubDate) {
         this.mPubDate = mPubDate;
     }
 
-    public List<Category> getmCategory() {
+    public List<Category> getCategory() {
         return mCategory;
     }
 
-    public void setmCategory(List<Category> mCategory) {
+    public void setCategory(List<Category> mCategory) {
         this.mCategory = mCategory;
     }
 
-    public String getmAuthor() {
+    public String getAuthor() {
         return mAuthor;
     }
 
-    public void setmAuthor(String mAuthor) {
+    public void setAuthor(String mAuthor) {
         this.mAuthor = mAuthor;
+    }
+
+    public void setImage(String imageUrl) {
+        this.mImage = imageUrl;
+    }
+
+    public String getImage() {
+        return mImage;
     }
 
     public boolean isRead() {
@@ -88,42 +97,47 @@ public class FeedItem {
         }
 
         public FeedItemBuilder setId(int id) {
-            mFeedItem.setmId(id);
+            mFeedItem.setId(id);
             return this;
         }
 
         public FeedItemBuilder setTitle(String title) {
-            mFeedItem.setmTitle(title);
+            mFeedItem.setTitle(title);
             return this;
         }
 
         public FeedItemBuilder setDescription(String desc) {
-            mFeedItem.setmDesc(desc);
+            mFeedItem.setDescription(desc);
             return this;
         }
 
         public FeedItemBuilder setLink(String link) {
-            mFeedItem.setmLink(link);
+            mFeedItem.setLink(link);
             return this;
         }
 
         public FeedItemBuilder setPubDate(String date) {
-            mFeedItem.setmPubDate(date);
+            mFeedItem.setPubDate(date);
             return this;
         }
 
         public FeedItemBuilder setCategory(List<Category> category) {
-            mFeedItem.setmCategory(category);
+            mFeedItem.setCategory(category);
             return this;
         }
 
         public FeedItemBuilder setAuthor(String author) {
-            mFeedItem.setmAuthor(author);
+            mFeedItem.setAuthor(author);
             return this;
         }
 
         public FeedItemBuilder setStatus(boolean read) {
             mFeedItem.setReadStatus(read);
+            return this;
+        }
+
+        public FeedItemBuilder setImage(String image) {
+            mFeedItem.setImage(image);
             return this;
         }
 
