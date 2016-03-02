@@ -1,4 +1,11 @@
 <resources>
-    <dimen name="progressbar_size">50dp</dimen>
+    <dimen name="progressbar_size">20dp</dimen>
+    <dimen name="padding_4dp">4dp</dimen>
     <dimen name="padding_8dp">8dp</dimen>
+    <dimen name="padding_16dp">16dp</dimen>
+    <dimen name="title_size">20sp</dimen>
+    <dimen name="author_size">11sp</dimen>
+    <dimen name="divider_height">1dp</dimen>
+    <dimen name="divider_space">10dp</dimen>
+    <dimen name="elevation">4dp</dimen>
 </resources>

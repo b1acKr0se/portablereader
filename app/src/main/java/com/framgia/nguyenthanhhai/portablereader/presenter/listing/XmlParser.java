@@ -1,5 +1,6 @@
 package com.framgia.nguyenthanhhai.portablereader.presenter.listing;
 
+import android.util.Log;
 import android.util.Xml;
 
 import com.framgia.nguyenthanhhai.portablereader.data.model.Category;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class XmlParser {
+    public static final String TAG_RSS = "rss";
     public static final String TAG_CHANNEL = "channel";
     public static final String TAG_ITEM = "item";
     public static final String TAG_TITLE = "title";
@@ -22,6 +24,7 @@ public class XmlParser {
     public static final String TAG_PUBDATE = "pubDate";
     public static final String TAG_CATEGORY = "category";
     public static final String TAG_AUTHOR = "author";
+    public static final String NAMESPACE = null;
 
     public static List<FeedItem> parse(String xml) throws XmlPullParserException, IOException {
         XmlPullParser parser = Xml.newPullParser();
@@ -33,14 +36,25 @@ public class XmlParser {
 
     private static List<FeedItem> readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
         List<FeedItem> list = new ArrayList<>();
-        parser.require(XmlPullParser.START_TAG, null, TAG_CHANNEL);
+        parser.require(XmlPullParser.START_TAG, NAMESPACE, TAG_RSS);
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
             String tag = parser.getName();
-            if (tag.equals(TAG_ITEM)) {
-                list.add(readItem(parser));
+            if (tag.equalsIgnoreCase(TAG_CHANNEL)) {
+                while (parser.next() != XmlPullParser.END_TAG) {
+                    if (parser.getEventType() != XmlPullParser.START_TAG) {
+                        continue;
+                    }
+                    if (parser.getName().equals(TAG_ITEM)) {
+                        list.add(readItem(parser));
+                    } else {
+                        skip(parser);
+                    }
+                }
+            } else {
+                skip(parser);
             }
         }
         return list;
