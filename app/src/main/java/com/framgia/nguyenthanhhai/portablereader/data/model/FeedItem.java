@@ -70,7 +70,7 @@ public class FeedItem {
         this.mAuthor = mAuthor;
     }
 
-    public class FeedItemBuilder {
+    public static class FeedItemBuilder {
         private final FeedItem mFeedItem;
 
         public FeedItemBuilder() {
