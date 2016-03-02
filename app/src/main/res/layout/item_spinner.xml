@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/spinner_width"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@android:id/text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/padding_8dp"
+        android:drawableRight="@drawable/spinner_triangle"
+        android:fontFamily="sans-serif"
+        android:paddingRight="@dimen/padding_4dp"
+        android:textColor="#ffffffff"
+        android:textSize="@dimen/spinner_text_size"
+        android:textStyle="bold" />
+
+</LinearLayout>
