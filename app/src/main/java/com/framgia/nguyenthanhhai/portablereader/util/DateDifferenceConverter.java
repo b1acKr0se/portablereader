@@ -56,4 +56,23 @@ public class DateDifferenceConverter {
             return UNDEFINED_TIME;
         }
     }
+
+    public static boolean isOutdated(String date) {
+        SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        Calendar calendar = Calendar.getInstance();
+        String current = format.format(calendar.getTime());
+        int differentInDays;
+        Date inputDate;
+        Date currentDate;
+        try {
+            inputDate = format.parse(date);
+            currentDate = format.parse(current);
+            long difference = currentDate.getTime() - inputDate.getTime();
+            differentInDays = (int) (difference / (1000 * 60 * 60 * 24));
+            return differentInDays > 10;
+        } catch (ParseException e) {
+            return false;
+        }
+    }
 }

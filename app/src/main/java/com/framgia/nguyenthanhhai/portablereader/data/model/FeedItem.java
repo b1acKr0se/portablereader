@@ -1,27 +1,48 @@
 package com.framgia.nguyenthanhhai.portablereader.data.model;
 
+import android.database.Cursor;
+
+import com.framgia.nguyenthanhhai.portablereader.constant.Db;
+
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Model for a feed item
  */
-public class FeedItem {
+public class FeedItem implements Serializable {
     private int mId;
     private String mTitle;
     private String mDesc;
     private String mLink;
     private String mPubDate;
-    private List<Category> mCategory;
+    private String mCategory;
     private String mAuthor;
     private String mImage;
     private boolean mIsRead;
+    private boolean mIsFavorited;
 
-    public int getId() {
-        return mId;
+    public FeedItem() {
+
+    }
+
+    public FeedItem(Cursor cursor) {
+        mId = cursor.getInt(cursor.getColumnIndexOrThrow(Db.FEED_ID));
+        mTitle = cursor.getString(cursor.getColumnIndexOrThrow(Db.FEED_TITLE));
+        mDesc = cursor.getString(cursor.getColumnIndexOrThrow(Db.FEED_DESC));
+        mLink = cursor.getString(cursor.getColumnIndexOrThrow(Db.FEED_LINK));
+        mAuthor = cursor.getString(cursor.getColumnIndexOrThrow(Db.FEED_AUTHOR));
+        mPubDate = cursor.getString(cursor.getColumnIndexOrThrow(Db.FEED_PUB_DATE));
+        mCategory = cursor.getString(cursor.getColumnIndexOrThrow(Db.FEED_CATEGORY));
+        mImage = cursor.getString(cursor.getColumnIndexOrThrow(Db.FEED_IMAGE));
     }
 
     public void setId(int mId) {
         this.mId = mId;
+    }
+
+    public int getId() {
+        return mId;
     }
 
     public String getTitle() {
@@ -56,11 +77,11 @@ public class FeedItem {
         this.mPubDate = mPubDate;
     }
 
-    public List<Category> getCategory() {
+    public String getCategory() {
         return mCategory;
     }
 
-    public void setCategory(List<Category> mCategory) {
+    public void setCategory(String mCategory) {
         this.mCategory = mCategory;
     }
 
@@ -86,6 +107,14 @@ public class FeedItem {
 
     public void setReadStatus(boolean read) {
         this.mIsRead = read;
+    }
+
+    public boolean isFavorited() {
+        return mIsFavorited;
+    }
+
+    public void setFavorite(boolean favorite) {
+        mIsFavorited = favorite;
     }
 
     public static class FeedItemBuilder {
@@ -121,7 +150,7 @@ public class FeedItem {
             return this;
         }
 
-        public FeedItemBuilder setCategory(List<Category> category) {
+        public FeedItemBuilder setCategory(String category) {
             mFeedItem.setCategory(category);
             return this;
         }

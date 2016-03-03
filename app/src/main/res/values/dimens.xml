@@ -1,8 +1,11 @@
 <resources>
-    <dimen name="progressbar_size">20dp</dimen>
+    <dimen name="progressbar_size">30dp</dimen>
     <dimen name="padding_4dp">4dp</dimen>
     <dimen name="padding_8dp">8dp</dimen>
     <dimen name="padding_16dp">16dp</dimen>
+    <dimen name="padding_24dp">24dp</dimen>
+    <dimen name="padding_48dp">48dp</dimen>
+    <dimen name="padding_64dp">64dp</dimen>
     <dimen name="title_size">20sp</dimen>
     <dimen name="author_size">11sp</dimen>
     <dimen name="divider_height">1dp</dimen>
@@ -12,4 +15,9 @@
     <dimen name="spinner_dropdown_text_size">16sp</dimen>
     <dimen name="spinner_width">200dp</dimen>
     <dimen name="spinner_height">48dp</dimen>
+    <dimen name="fab_margin">24dp</dimen>
+    <dimen name="fab_border_width">0dp</dimen>
+    <dimen name="fab_elevation">6dp</dimen>
+    <dimen name="fab_press_translation">12dp</dimen>
+    <dimen name="image_height">200dp</dimen>
 </resources>

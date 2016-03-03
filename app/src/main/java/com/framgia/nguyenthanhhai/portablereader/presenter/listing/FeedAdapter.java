@@ -1,7 +1,7 @@
 package com.framgia.nguyenthanhhai.portablereader.presenter.listing;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,18 +11,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
 import com.framgia.nguyenthanhhai.portablereader.R;
 import com.framgia.nguyenthanhhai.portablereader.data.model.FeedItem;
 import com.framgia.nguyenthanhhai.portablereader.util.DateDifferenceConverter;
+import com.framgia.nguyenthanhhai.portablereader.util.TextFormatter;
 
+import java.io.File;
 import java.util.List;
 
-public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
+public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    public static final int TYPE_TEXT = 0;
+    public static final int TYPE_IMAGE = 1;
     private List<FeedItem> mFeedList;
     private Context mContext;
     private IFeedFragmentView mFeedFragmentView;
@@ -37,39 +43,69 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_feed, parent, false);
-        return new ViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == TYPE_IMAGE) {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_feed_with_image, parent, false);
+            return new ImageViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_feed, parent, false);
+            return new TextViewHolder(view);
+        }
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.feedItem = mFeedList.get(position);
-        holder.itemView.setOnClickListener(holder);
-        holder.titleTextView.setText(holder.feedItem.getTitle());
-        if(holder.feedItem.isRead()) {
-            holder.titleTextView.setTextColor(textColorRead);
-        } else {
-            holder.titleTextView.setTextColor(textColorUnread);
+    public int getItemViewType(int position) {
+        if (mFeedList.get(position).getImage() != null) {
+            return TYPE_IMAGE;
         }
-        holder.authorTextView.setText(holder.feedItem.getAuthor() == null ? "author not stated" : holder.feedItem.getAuthor());
-        holder.pubDateTextView.setText(DateDifferenceConverter.getDateDifference(holder.feedItem.getPubDate()));
-        holder.descriptionTextView.setText(holder.feedItem.getDescription().replaceAll("\\s+", " "));
-        Glide.with(mContext).load(holder.feedItem.getImage())
-                .listener(new RequestListener<String, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        holder.descriptionTextView.setVisibility(View.GONE);
-                        return false;
-                    }
+        return TYPE_TEXT;
+    }
 
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        holder.descriptionTextView.setVisibility(View.VISIBLE);
-                        return false;
-                    }
-                })
-                .into(holder.imageView);
+    @Override
+    public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, int position) {
+        if (viewHolder instanceof ImageViewHolder) {
+            final ImageViewHolder imageViewHolder = (ImageViewHolder) viewHolder;
+            imageViewHolder.feedItem = mFeedList.get(position);
+            imageViewHolder.itemView.setOnClickListener(imageViewHolder);
+            imageViewHolder.titleTextView.setText(imageViewHolder.feedItem.getTitle());
+            if (imageViewHolder.feedItem.isRead()) {
+                imageViewHolder.titleTextView.setTextColor(textColorRead);
+            } else {
+                imageViewHolder.titleTextView.setTextColor(textColorUnread);
+            }
+            imageViewHolder.authorTextView.setText(imageViewHolder.feedItem.getAuthor() == null ? "author not stated" : imageViewHolder.feedItem.getAuthor());
+            imageViewHolder.pubDateTextView.setText(DateDifferenceConverter.getDateDifference(imageViewHolder.feedItem.getPubDate()));
+            imageViewHolder.descriptionTextView.setText(TextFormatter.removeMultipleLineBreaks(imageViewHolder.feedItem.getDescription()));
+            Glide.with(mContext)
+                    .load(imageViewHolder.feedItem.getImage())
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            imageViewHolder.descriptionTextView.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            imageViewHolder.descriptionTextView.setVisibility(View.VISIBLE);
+                            return false;
+                        }
+                    })
+                    .into(imageViewHolder.imageView);
+        } else if (viewHolder instanceof TextViewHolder) {
+            final TextViewHolder textViewHolder = (TextViewHolder) viewHolder;
+            textViewHolder.feedItem = mFeedList.get(position);
+            textViewHolder.itemView.setOnClickListener(textViewHolder);
+            textViewHolder.titleTextView.setText(textViewHolder.feedItem.getTitle());
+            if (textViewHolder.feedItem.isRead()) {
+                textViewHolder.titleTextView.setTextColor(textColorRead);
+            } else {
+                textViewHolder.titleTextView.setTextColor(textColorUnread);
+            }
+            textViewHolder.authorTextView.setText(textViewHolder.feedItem.getAuthor() == null ? "author not stated" : textViewHolder.feedItem.getAuthor());
+            textViewHolder.pubDateTextView.setText(DateDifferenceConverter.getDateDifference(textViewHolder.feedItem.getPubDate()));
+            textViewHolder.descriptionTextView.setText(TextFormatter.removeMultipleLineBreaks(textViewHolder.feedItem.getDescription()));
+        }
     }
 
     @Override
@@ -77,7 +113,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         return mFeedList.size();
     }
 
-    protected class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    protected class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public FeedItem feedItem;
         private TextView titleTextView;
         private TextView authorTextView;
@@ -85,7 +121,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         private TextView descriptionTextView;
         private ImageView imageView;
 
-        public ViewHolder(View view) {
+        public ImageViewHolder(View view) {
             super(view);
             titleTextView = (TextView) view.findViewById(R.id.text_title);
             authorTextView = (TextView) view.findViewById(R.id.text_author);
@@ -96,7 +132,28 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
         @Override
         public void onClick(View v) {
-            mFeedFragmentView.onFeedClicked(feedItem);
+            mFeedFragmentView.onFeedClicked(v, feedItem);
+        }
+    }
+
+    protected class TextViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public FeedItem feedItem;
+        private TextView titleTextView;
+        private TextView authorTextView;
+        private TextView pubDateTextView;
+        private TextView descriptionTextView;
+
+        public TextViewHolder(View view) {
+            super(view);
+            titleTextView = (TextView) view.findViewById(R.id.text_title);
+            authorTextView = (TextView) view.findViewById(R.id.text_author);
+            pubDateTextView = (TextView) view.findViewById(R.id.text_pub_date);
+            descriptionTextView = (TextView) view.findViewById(R.id.text_desc);
+        }
+
+        @Override
+        public void onClick(View v) {
+            mFeedFragmentView.onFeedClicked(v, feedItem);
         }
     }
 }
