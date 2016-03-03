@@ -4,4 +4,5 @@
     <string name="ellipse">...</string>
     <string name="different_single_day">$s day ago</string>
     <string name="different_multi_day">$s days ago</string>
+    <string name="read_article">Article</string>
 </resources>

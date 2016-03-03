@@ -19,5 +19,5 @@
     <dimen name="fab_border_width">0dp</dimen>
     <dimen name="fab_elevation">6dp</dimen>
     <dimen name="fab_press_translation">12dp</dimen>
-    <dimen name="image_height">250dp</dimen>
+    <dimen name="image_height">200dp</dimen>
 </resources>
