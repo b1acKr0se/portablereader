@@ -3,6 +3,7 @@ package com.framgia.nguyenthanhhai.portablereader.presenter.detail;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -25,10 +26,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.framgia.nguyenthanhhai.portablereader.R;
 import com.framgia.nguyenthanhhai.portablereader.data.model.FeedItem;
@@ -101,6 +104,12 @@ public class DetailActivity extends BaseActivity {
             Glide.with(this).load(item.getImage())
                     .asBitmap()
                     .into(new BitmapImageViewTarget(imageView) {
+                        @Override
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            super.onLoadFailed(e, errorDrawable);
+                            supportStartPostponedEnterTransition();
+                        }
+
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                             super.onResourceReady(resource, glideAnimation);
