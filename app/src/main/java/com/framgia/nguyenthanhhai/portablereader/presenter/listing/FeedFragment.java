@@ -46,7 +46,7 @@ public class FeedFragment extends Fragment implements IFeedFragmentView {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mUrl = getArguments().getString(BUNDLE_URL);
-        mFeedPresenter = new FeedPresenter(this, mUrl);
+        mFeedPresenter = new FeedPresenter(getContext(), this, mUrl);
     }
 
     @Override

@@ -1,9 +1,7 @@
 package com.framgia.nguyenthanhhai.portablereader.presenter.listing;
 
-import android.util.Log;
 import android.util.Xml;
 
-import com.framgia.nguyenthanhhai.portablereader.data.model.Category;
 import com.framgia.nguyenthanhhai.portablereader.data.model.FeedItem;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -22,7 +20,6 @@ public class XmlParser {
     public static final String TAG_DESC = "description";
     public static final String TAG_LINK = "link";
     public static final String TAG_PUBDATE = "pubDate";
-    public static final String TAG_CATEGORY = "category";
     public static final String TAG_AUTHOR = "author";
     public static final String TAG_ENCLOSURE = "enclosure";
     public static final String NAMESPACE = null;
@@ -63,7 +60,6 @@ public class XmlParser {
 
     private static FeedItem readItem(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, null, TAG_ITEM);
-        List<Category> categories = new ArrayList<>();
         String title = null;
         String desc = null;
         String link = null;
@@ -88,9 +84,6 @@ public class XmlParser {
                 case TAG_PUBDATE:
                     pubDate = readPubDate(parser);
                     break;
-                case TAG_CATEGORY:
-                    categories.add(new Category.CategoryBuilder().name(readCategory(parser)).build());
-                    break;
                 case TAG_AUTHOR:
                     author = readAuthor(parser);
                     break;
@@ -105,7 +98,6 @@ public class XmlParser {
                 .setTitle(title)
                 .setDescription(desc)
                 .setLink(link)
-                .setCategory(categories)
                 .setPubDate(pubDate)
                 .setImage(image)
                 .setAuthor(author).build();
@@ -141,14 +133,6 @@ public class XmlParser {
         String pubDate = readText(parser);
         parser.require(XmlPullParser.END_TAG, null, TAG_PUBDATE);
         return pubDate;
-    }
-
-    private static String readCategory(XmlPullParser parser) throws IOException,
-            XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, null, TAG_CATEGORY);
-        String category = readText(parser);
-        parser.require(XmlPullParser.END_TAG, null, TAG_CATEGORY);
-        return category;
     }
 
     private static String readAuthor(XmlPullParser parser) throws IOException,

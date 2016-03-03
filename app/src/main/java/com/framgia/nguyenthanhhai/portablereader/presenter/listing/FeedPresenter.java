@@ -1,5 +1,7 @@
 package com.framgia.nguyenthanhhai.portablereader.presenter.listing;
 
+import android.content.Context;
+
 import com.framgia.nguyenthanhhai.portablereader.data.model.FeedItem;
 
 import java.util.List;
@@ -14,8 +16,8 @@ public class FeedPresenter implements IFeedPresenter {
     private IFeedFragmentView mFeedFragmentView;
     private FeedCrawler mFeedCrawler;
 
-    public FeedPresenter(IFeedFragmentView feedFragmentView, String url) {
-        this.mFeedCrawler = new FeedCrawler(url);
+    public FeedPresenter(Context context, IFeedFragmentView feedFragmentView, String url) {
+        this.mFeedCrawler = new FeedCrawler(context, url);
         this.mFeedFragmentView = feedFragmentView;
     }
 
