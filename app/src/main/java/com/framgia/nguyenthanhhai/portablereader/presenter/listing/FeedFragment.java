@@ -6,14 +6,17 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.framgia.nguyenthanhhai.portablereader.R;
+import com.framgia.nguyenthanhhai.portablereader.data.local.FeedDao;
 import com.framgia.nguyenthanhhai.portablereader.data.model.FeedItem;
 import com.framgia.nguyenthanhhai.portablereader.presenter.detail.DetailActivity;
+import com.framgia.nguyenthanhhai.portablereader.ui.activity.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +25,7 @@ import rx.Subscription;
 
 public class FeedFragment extends Fragment implements IFeedFragmentView {
     static final String BUNDLE_URL = "BUNDLE_URL";
+    static final int INVALID_ID = -1;
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
     private FeedPresenter mFeedPresenter;
@@ -29,6 +33,7 @@ public class FeedFragment extends Fragment implements IFeedFragmentView {
     private FeedAdapter mFeedAdapter;
     private List<FeedItem> mFeedList = new ArrayList<>();
     private String mUrl;
+    private int position = INVALID_ID;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -56,6 +61,10 @@ public class FeedFragment extends Fragment implements IFeedFragmentView {
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        RecyclerView.ItemAnimator animator = mRecyclerView.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
         mFeedAdapter = new FeedAdapter(getContext(), mFeedList, this);
         mRecyclerView.setAdapter(mFeedAdapter);
         return view;
@@ -65,6 +74,14 @@ public class FeedFragment extends Fragment implements IFeedFragmentView {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mFeedSubscription = mFeedPresenter.displayFeed();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(position != INVALID_ID) {
+            mFeedAdapter.notifyItemChanged(position);
+        }
     }
 
     @Override
@@ -94,6 +111,9 @@ public class FeedFragment extends Fragment implements IFeedFragmentView {
 
     @Override
     public void onFeedClicked(View view, FeedItem feedItem) {
+        new FeedDao(getContext()).insertRead(feedItem);
+        position = mFeedList.indexOf(feedItem);
+        feedItem.setReadStatus(true);
         DetailActivity.navigate((AppCompatActivity) getActivity(), view.findViewById(R.id.image_feed), feedItem);
     }
 }

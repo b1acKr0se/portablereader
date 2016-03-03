@@ -22,10 +22,12 @@ public class FeedCrawler implements IFeedCrawler {
     private final OkHttpClient mOkhttpClient = new OkHttpClient();
     private String mUrl;
     private Context mContext;
+    private FeedDao mFeedDao;
 
     public FeedCrawler(Context context, String url) {
         this.mUrl = url;
         mContext = context;
+        mFeedDao = new FeedDao(context);
     }
 
     @Override
@@ -53,15 +55,16 @@ public class FeedCrawler implements IFeedCrawler {
         String category = getCategoryFromUrl(mUrl);
         for (FeedItem item : list) {
             item.setCategory(category);
+            item.setReadStatus(mFeedDao.isRead(item));
         }
         if (!list.isEmpty()) {
-            new FeedDao(mContext).insertFeeds(list, category);
+            mFeedDao.insertFeeds(list, category);
         }
         return list;
     }
 
     private List<FeedItem> getCacheData() {
-        return new FeedDao(mContext).getFeedList(getCategoryFromUrl(mUrl));
+        return mFeedDao.getFeedList(getCategoryFromUrl(mUrl));
     }
 
     private String getCategoryFromUrl(String url) {
