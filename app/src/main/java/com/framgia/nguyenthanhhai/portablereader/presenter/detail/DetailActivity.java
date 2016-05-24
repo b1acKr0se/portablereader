@@ -1,13 +1,17 @@
 package com.framgia.nguyenthanhhai.portablereader.presenter.detail;
 
+import android.content.ComponentName;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.customtabs.CustomTabsClient;
+import android.support.customtabs.CustomTabsIntent;
+import android.support.customtabs.CustomTabsServiceConnection;
+import android.support.customtabs.CustomTabsSession;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
@@ -16,7 +20,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,25 +29,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.Target;
 import com.framgia.nguyenthanhhai.portablereader.R;
 import com.framgia.nguyenthanhhai.portablereader.data.model.FeedItem;
 import com.framgia.nguyenthanhhai.portablereader.ui.activity.BaseActivity;
 import com.framgia.nguyenthanhhai.portablereader.util.DateDifferenceConverter;
 import com.framgia.nguyenthanhhai.portablereader.util.TextFormatter;
 
-public class DetailActivity extends BaseActivity {
+public class DetailActivity extends BaseActivity implements View.OnClickListener {
     static final String EXTRA_IMAGE = "com.framgia.nguyenthanhhai.extraImage";
     static final String EXTRA_FEED = "com.framgia.nguyenthanhhai.extraFeed";
+    public static final String CUSTOM_TAB_PACKAGE_NAME = "com.android.chrome";
     static final int TYPE_TEXT = 0;
     static final int TYPE_IMAGE = 1;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
+    private CustomTabsClient mClient;
+    private CustomTabsSession mCustomTabsSession;
+    private CustomTabsIntent customTabsIntent;
+    private FeedItem mFeedItem;
     private int layoutType;
 
     public static void navigate(AppCompatActivity activity, View transitionImage, FeedItem feedItem) {
@@ -95,13 +98,14 @@ public class DetailActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.read_article));
-        FeedItem item = (FeedItem) getIntent().getSerializableExtra(EXTRA_FEED);
+        setupChromeCustomTab();
+        mFeedItem = (FeedItem) getIntent().getSerializableExtra(EXTRA_FEED);
         if (layoutType == TYPE_IMAGE) {
             mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-            mCollapsingToolbarLayout.setTitle(item.getTitle());
+            mCollapsingToolbarLayout.setTitle(mFeedItem.getTitle());
             mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, android.R.color.transparent));
             final ImageView imageView = (ImageView) findViewById(R.id.image);
-            Glide.with(this).load(item.getImage())
+            Glide.with(this).load(mFeedItem.getImage())
                     .asBitmap()
                     .into(new BitmapImageViewTarget(imageView) {
                         @Override
@@ -123,15 +127,33 @@ public class DetailActivity extends BaseActivity {
                     });
         }
         TextView titleTextView = (TextView) findViewById(R.id.text_title);
-        titleTextView.setText(item.getTitle());
+        titleTextView.setText(mFeedItem.getTitle());
         TextView descTextView = (TextView) findViewById(R.id.text_description);
-        descTextView.setText(TextFormatter.removeMultipleLineBreaks(item.getDescription()));
+        descTextView.setText(TextFormatter.removeMultipleLineBreaks(mFeedItem.getDescription()));
         TextView authorTextView = (TextView) findViewById(R.id.text_author);
-        authorTextView.setText(item.getAuthor());
+        authorTextView.setText(mFeedItem.getAuthor() == null ? "author not stated" : mFeedItem.getAuthor());
         TextView pubDateTextView = (TextView) findViewById(R.id.text_pub_date);
-        pubDateTextView.setText(DateDifferenceConverter.getDateDifference(item.getPubDate()));
+        pubDateTextView.setText(DateDifferenceConverter.getDateDifference(mFeedItem.getPubDate()));
+        View linkButton = findViewById(R.id.button_link);
+        View favoriteButton = findViewById(R.id.button_favorite);
+        View shareButton = findViewById(R.id.button_share);
+        linkButton.setOnClickListener(this);
+        favoriteButton.setOnClickListener(this);
+        shareButton.setOnClickListener(this);
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.button_link:
+                customTabsIntent.launchUrl(DetailActivity.this, Uri.parse(mFeedItem.getLink()));
+                break;
+            case R.id.button_favorite:
+                break;
+            case R.id.button_share:
+                break;
+        }
+    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent motionEvent) {
@@ -147,15 +169,7 @@ public class DetailActivity extends BaseActivity {
         int primary = ContextCompat.getColor(this, R.color.colorPrimary);
         mCollapsingToolbarLayout.setContentScrimColor(palette.getMutedColor(primary));
         mCollapsingToolbarLayout.setStatusBarScrimColor(palette.getDarkMutedColor(primaryDark));
-        updateBackground((FloatingActionButton) findViewById(R.id.fab), palette);
         supportStartPostponedEnterTransition();
-    }
-
-    private void updateBackground(FloatingActionButton fab, Palette palette) {
-        int lightVibrantColor = palette.getLightVibrantColor(ContextCompat.getColor(this, android.R.color.white));
-        int vibrantColor = palette.getVibrantColor(ContextCompat.getColor(this, R.color.colorAccent));
-        fab.setRippleColor(lightVibrantColor);
-        fab.setBackgroundTintList(ColorStateList.valueOf(vibrantColor));
     }
 
     private void setActivityTransition() {
@@ -165,5 +179,28 @@ public class DetailActivity extends BaseActivity {
             getWindow().setEnterTransition(transition);
             getWindow().setReturnTransition(transition);
         }
+    }
+
+    private void setupChromeCustomTab() {
+        CustomTabsServiceConnection mCustomTabsServiceConnection = new CustomTabsServiceConnection() {
+            @Override
+            public void onCustomTabsServiceConnected(ComponentName componentName, CustomTabsClient customTabsClient) {
+                //Pre-warming
+                mClient = customTabsClient;
+                mClient.warmup(0L);
+                //Initialize a session as soon as possible.
+                mCustomTabsSession = mClient.newSession(null);
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                mClient = null;
+            }
+        };
+        CustomTabsClient.bindCustomTabsService(this, CUSTOM_TAB_PACKAGE_NAME, mCustomTabsServiceConnection);
+        customTabsIntent = new CustomTabsIntent.Builder(mCustomTabsSession)
+                .setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                .setShowTitle(true)
+                .build();
     }
 }
