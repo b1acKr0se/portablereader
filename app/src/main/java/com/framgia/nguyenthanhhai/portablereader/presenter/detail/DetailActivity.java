@@ -11,6 +11,7 @@ import android.support.customtabs.CustomTabsClient;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.customtabs.CustomTabsServiceConnection;
 import android.support.customtabs.CustomTabsSession;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -44,11 +45,13 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
     static final int TYPE_TEXT = 0;
     static final int TYPE_IMAGE = 1;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
+    private AppBarLayout mAppBarLayout;
     private CustomTabsClient mClient;
     private CustomTabsSession mCustomTabsSession;
     private CustomTabsIntent customTabsIntent;
     private FeedItem mFeedItem;
     private int layoutType;
+    private boolean mShouldOverrideTransition = true;
 
     public static void navigate(AppCompatActivity activity, View transitionImage, FeedItem feedItem) {
         Intent intent = new Intent(activity, DetailActivity.class);
@@ -91,9 +94,25 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
     }
 
     @Override
+    public void onBackPressed() {
+        if (mShouldOverrideTransition) supportFinishAfterTransition();
+        else finish();
+    }
+
+    @Override
     protected void bindViews() {
         ViewCompat.setTransitionName(findViewById(R.id.app_bar_layout), EXTRA_IMAGE);
         supportPostponeEnterTransition();
+        mAppBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarStateListener() {
+            @Override
+            public void onStateChanged(AppBarLayout appBarLayout, State state) {
+                if (state == State.COLLAPSED)
+                    mShouldOverrideTransition = false;
+                else
+                    mShouldOverrideTransition = true;
+            }
+        });
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
