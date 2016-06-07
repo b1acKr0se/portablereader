@@ -3,6 +3,7 @@ package com.framgia.nguyenthanhhai.portablereader.presenter.detail;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -107,10 +108,7 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
         mAppBarLayout.addOnOffsetChangedListener(new AppBarStateListener() {
             @Override
             public void onStateChanged(AppBarLayout appBarLayout, State state) {
-                if (state == State.COLLAPSED)
-                    mShouldOverrideTransition = false;
-                else
-                    mShouldOverrideTransition = true;
+                mShouldOverrideTransition = state == State.EXPANDED;
             }
         });
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -187,8 +185,14 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
         int primaryDark = ContextCompat.getColor(this, R.color.colorPrimaryDark);
         int primary = ContextCompat.getColor(this, R.color.colorPrimary);
         mCollapsingToolbarLayout.setContentScrimColor(palette.getMutedColor(primary));
-        mCollapsingToolbarLayout.setStatusBarScrimColor(palette.getDarkMutedColor(primaryDark));
+        mCollapsingToolbarLayout.setStatusBarScrimColor(palette.getMutedColor(primaryDark));
         supportStartPostponedEnterTransition();
+        String hexColor = String.format("#%06X", (0xFFFFFF & palette.getMutedColor(primary)));
+        int color = Color.parseColor(hexColor);
+        customTabsIntent = new CustomTabsIntent.Builder(mCustomTabsSession)
+                .setToolbarColor(color)
+                .setShowTitle(true)
+                .build();
     }
 
     private void setActivityTransition() {
@@ -217,9 +221,6 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
             }
         };
         CustomTabsClient.bindCustomTabsService(this, CUSTOM_TAB_PACKAGE_NAME, mCustomTabsServiceConnection);
-        customTabsIntent = new CustomTabsIntent.Builder(mCustomTabsSession)
-                .setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary))
-                .setShowTitle(true)
-                .build();
+
     }
 }

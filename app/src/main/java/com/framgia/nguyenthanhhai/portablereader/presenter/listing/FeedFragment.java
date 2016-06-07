@@ -79,7 +79,7 @@ public class FeedFragment extends Fragment implements IFeedFragmentView {
     @Override
     public void onResume() {
         super.onResume();
-        if(position != INVALID_ID) {
+        if (position != INVALID_ID) {
             mFeedAdapter.notifyItemChanged(position);
         }
     }
@@ -87,7 +87,7 @@ public class FeedFragment extends Fragment implements IFeedFragmentView {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(mFeedSubscription != null && mFeedSubscription.isUnsubscribed()) {
+        if (mFeedSubscription != null && mFeedSubscription.isUnsubscribed()) {
             mFeedSubscription.unsubscribe();
         }
     }
@@ -114,6 +114,7 @@ public class FeedFragment extends Fragment implements IFeedFragmentView {
         new FeedDao(getContext()).insertRead(feedItem);
         position = mFeedList.indexOf(feedItem);
         feedItem.setReadStatus(true);
+        view.findViewById(R.id.text_desc).setVisibility(View.GONE);
         DetailActivity.navigate((AppCompatActivity) getActivity(), view.findViewById(R.id.image_feed), feedItem);
     }
 }
