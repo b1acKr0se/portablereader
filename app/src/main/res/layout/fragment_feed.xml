@@ -15,7 +15,6 @@
         android:id="@+id/progress_bar"
         android:layout_width="@dimen/progressbar_size"
         android:layout_height="@dimen/progressbar_size"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/padding_8dp" />
+        android:layout_gravity="center_horizontal"/>
 
 </FrameLayout>

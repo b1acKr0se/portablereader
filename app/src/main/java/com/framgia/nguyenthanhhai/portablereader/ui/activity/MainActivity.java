@@ -1,8 +1,12 @@
 package com.framgia.nguyenthanhhai.portablereader.ui.activity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.OnApplyWindowInsetsListener;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.WindowInsetsCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -20,7 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends BaseActivity implements AdapterView.OnItemSelectedListener {
-    private Toolbar mToolbar;
     private List<String> mCategoryList = Arrays.asList("Science & Technology", "Economy", "Health", "Arts & Entertainment");
     private int currentSelected = 0;
 
@@ -34,13 +37,17 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
     @Override
     protected void bindViews() {
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            toolbar.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+
         View spinnerContainer = LayoutInflater.from(this).inflate(R.layout.toolbar_spinner,
-                mToolbar, false);
+                toolbar, false);
         ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        mToolbar.addView(spinnerContainer, lp);
+        toolbar.addView(spinnerContainer, lp);
         CategoryAdapter spinnerAdapter = new CategoryAdapter(this);
         spinnerAdapter.addItems(mCategoryList);
         Spinner spinner = (Spinner) spinnerContainer.findViewById(R.id.toolbar_spinner);
