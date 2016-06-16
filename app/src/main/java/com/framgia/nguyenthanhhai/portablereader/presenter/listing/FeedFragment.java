@@ -1,6 +1,7 @@
 package com.framgia.nguyenthanhhai.portablereader.presenter.listing;
 
 
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +17,6 @@ import com.framgia.nguyenthanhhai.portablereader.R;
 import com.framgia.nguyenthanhhai.portablereader.data.local.FeedDao;
 import com.framgia.nguyenthanhhai.portablereader.data.model.FeedItem;
 import com.framgia.nguyenthanhhai.portablereader.presenter.detail.DetailActivity;
-import com.framgia.nguyenthanhhai.portablereader.ui.activity.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +26,11 @@ import rx.Subscription;
 public class FeedFragment extends Fragment implements IFeedFragmentView {
     static final String BUNDLE_URL = "BUNDLE_URL";
     static final int INVALID_ID = -1;
-    private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
     private FeedPresenter mFeedPresenter;
     private Subscription mFeedSubscription;
     private FeedAdapter mFeedAdapter;
     private List<FeedItem> mFeedList = new ArrayList<>();
-    private String mUrl;
     private int position = INVALID_ID;
 
     public FeedFragment() {
@@ -50,7 +48,7 @@ public class FeedFragment extends Fragment implements IFeedFragmentView {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mUrl = getArguments().getString(BUNDLE_URL);
+        String mUrl = getArguments().getString(BUNDLE_URL);
         mFeedPresenter = new FeedPresenter(getContext(), this, mUrl);
     }
 
@@ -59,8 +57,9 @@ public class FeedFragment extends Fragment implements IFeedFragmentView {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_feed, container, false);
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setClipToPadding(false);
         RecyclerView.ItemAnimator animator = mRecyclerView.getItemAnimator();
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
@@ -94,12 +93,12 @@ public class FeedFragment extends Fragment implements IFeedFragmentView {
 
     @Override
     public void showLoading() {
-        mProgressBar.setVisibility(View.VISIBLE);
+        ObjectAnimator.ofFloat(mProgressBar, "translationY", 150).start();
     }
 
     @Override
     public void hideLoading() {
-        mProgressBar.setVisibility(View.GONE);
+        ObjectAnimator.ofFloat(mProgressBar, "translationY", -mProgressBar.getHeight()).start();
     }
 
     @Override

@@ -9,10 +9,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawablePadding="@dimen/padding_8dp"
-        android:drawableRight="@drawable/spinner_triangle"
+        android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"
         android:fontFamily="sans-serif"
         android:paddingRight="@dimen/padding_4dp"
-        android:textColor="#ffffffff"
+        android:textColor="#000000"
         android:textSize="@dimen/spinner_text_size"
         android:textStyle="bold" />
 

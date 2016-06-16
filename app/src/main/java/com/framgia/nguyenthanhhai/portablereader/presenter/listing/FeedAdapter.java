@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +23,7 @@ import com.bumptech.glide.request.target.Target;
 import com.framgia.nguyenthanhhai.portablereader.R;
 import com.framgia.nguyenthanhhai.portablereader.data.model.FeedItem;
 import com.framgia.nguyenthanhhai.portablereader.util.DateDifferenceConverter;
+import com.framgia.nguyenthanhhai.portablereader.util.ScreenUtils;
 import com.framgia.nguyenthanhhai.portablereader.util.TextFormatter;
 
 import java.io.File;
@@ -29,10 +32,12 @@ import java.util.List;
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final int TYPE_TEXT = 0;
     public static final int TYPE_IMAGE = 1;
+    private static final int ANIMATED_ITEMS_COUNT = 2;
     private List<FeedItem> mFeedList;
     private Context mContext;
     private IFeedFragmentView mFeedFragmentView;
     private int textColorRead, textColorUnread;
+    private int lastAnimatedPosition = -1;
 
     public FeedAdapter(Context context, List<FeedItem> list, IFeedFragmentView feedFragmentView) {
         this.mContext = context;
@@ -61,8 +66,24 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return TYPE_TEXT;
     }
 
+    private void runEnterAnimation(View view, int position) {
+        if (position >= ANIMATED_ITEMS_COUNT) {
+            return;
+        }
+        if (position > lastAnimatedPosition) {
+            lastAnimatedPosition = position;
+            view.setTranslationY(ScreenUtils.getScreenHeight(mContext));
+            view.animate()
+                    .translationY(0)
+                    .setInterpolator(new DecelerateInterpolator(3.f))
+                    .setDuration(1000)
+                    .start();
+        }
+    }
+
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, int position) {
+        runEnterAnimation(viewHolder.itemView, position);
         if (viewHolder instanceof ImageViewHolder) {
             final ImageViewHolder imageViewHolder = (ImageViewHolder) viewHolder;
             imageViewHolder.feedItem = mFeedList.get(position);

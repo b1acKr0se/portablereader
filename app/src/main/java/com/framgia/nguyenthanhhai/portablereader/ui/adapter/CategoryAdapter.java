@@ -1,6 +1,7 @@
 package com.framgia.nguyenthanhhai.portablereader.ui.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,8 +55,8 @@ public class CategoryAdapter extends BaseAdapter {
             view.setTag("DROPDOWN");
         }
         TextView textView = (TextView) view.findViewById(android.R.id.text1);
+        textView.setTextColor(ContextCompat.getColor(mContext, android.R.color.black));
         textView.setText(getTitle(position));
-
         return view;
     }
 
@@ -67,6 +68,7 @@ public class CategoryAdapter extends BaseAdapter {
             view.setTag("NON_DROPDOWN");
         }
         TextView textView = (TextView) view.findViewById(android.R.id.text1);
+        textView.setTextColor(ContextCompat.getColor(mContext, android.R.color.black));
         textView.setText(getTitle(position));
         return view;
     }
