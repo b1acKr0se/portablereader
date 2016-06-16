@@ -1,10 +1,12 @@
 package com.framgia.nguyenthanhhai.portablereader.presenter.listing;
 
 import android.content.Context;
+import android.os.Handler;
 
 import com.framgia.nguyenthanhhai.portablereader.data.model.FeedItem;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Subscriber;
 import rx.Subscription;
@@ -45,9 +47,14 @@ public class FeedPresenter implements IFeedPresenter {
                     }
 
                     @Override
-                    public void onNext(List<FeedItem> feedItems) {
-                        mFeedFragmentView.hideLoading();
-                        mFeedFragmentView.showFeedList(feedItems);
+                    public void onNext(final List<FeedItem> feedItems) {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mFeedFragmentView.hideLoading();
+                                mFeedFragmentView.showFeedList(feedItems);
+                            }
+                        }, 200);
                     }
                 });
     }

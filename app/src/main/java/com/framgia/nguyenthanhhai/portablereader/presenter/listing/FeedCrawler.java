@@ -21,12 +21,10 @@ import rx.functions.Func0;
 public class FeedCrawler implements IFeedCrawler {
     private final OkHttpClient mOkhttpClient = new OkHttpClient();
     private String mUrl;
-    private Context mContext;
     private FeedDao mFeedDao;
 
     public FeedCrawler(Context context, String url) {
         this.mUrl = url;
-        mContext = context;
         mFeedDao = new FeedDao(context);
     }
 

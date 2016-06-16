@@ -1,5 +1,6 @@
 package com.framgia.nguyenthanhhai.portablereader.presenter.detail;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -36,6 +37,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.framgia.nguyenthanhhai.portablereader.R;
 import com.framgia.nguyenthanhhai.portablereader.data.model.FeedItem;
 import com.framgia.nguyenthanhhai.portablereader.ui.activity.BaseActivity;
+import com.framgia.nguyenthanhhai.portablereader.ui.customtabs.CustomTabActivityHelper;
 import com.framgia.nguyenthanhhai.portablereader.util.DateDifferenceConverter;
 import com.framgia.nguyenthanhhai.portablereader.util.TextFormatter;
 
@@ -163,13 +165,24 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_link:
-                customTabsIntent.launchUrl(DetailActivity.this, Uri.parse(mFeedItem.getLink()));
+                openLinkWithChromeCustomTab();
                 break;
             case R.id.button_favorite:
                 break;
             case R.id.button_share:
                 break;
         }
+    }
+
+    private void openLinkWithChromeCustomTab() {
+        CustomTabActivityHelper.openCustomTab(this, customTabsIntent, Uri.parse(mFeedItem.getLink()),
+                new CustomTabActivityHelper.CustomTabFallback() {
+                    @Override
+                    public void openUri(Activity activity, Uri uri) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(intent);
+                    }
+                });
     }
 
     @Override
@@ -205,22 +218,6 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void setupChromeCustomTab() {
-        CustomTabsServiceConnection mCustomTabsServiceConnection = new CustomTabsServiceConnection() {
-            @Override
-            public void onCustomTabsServiceConnected(ComponentName componentName, CustomTabsClient customTabsClient) {
-                //Pre-warming
-                mClient = customTabsClient;
-                mClient.warmup(0L);
-                //Initialize a session as soon as possible.
-                mCustomTabsSession = mClient.newSession(null);
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                mClient = null;
-            }
-        };
-        CustomTabsClient.bindCustomTabsService(this, CUSTOM_TAB_PACKAGE_NAME, mCustomTabsServiceConnection);
 
     }
 }
