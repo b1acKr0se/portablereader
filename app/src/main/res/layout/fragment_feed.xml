@@ -1,20 +1,21 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".presenter.listing.FeedFragment">
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".presenter.listing.FeedFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:paddingBottom="@dimen/padding_8dp" />
+        android:paddingBottom="@dimen/padding_8dp"/>
 
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="@dimen/progressbar_size"
         android:layout_height="@dimen/progressbar_size"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="-30dp"/>
 
 </FrameLayout>

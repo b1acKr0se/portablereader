@@ -93,7 +93,7 @@ public class FeedFragment extends Fragment implements IFeedFragmentView {
 
     @Override
     public void showLoading() {
-        ObjectAnimator.ofFloat(mProgressBar, "translationY", 150).start();
+        ObjectAnimator.ofFloat(mProgressBar, "translationY", 200).start();
     }
 
     @Override
@@ -104,6 +104,8 @@ public class FeedFragment extends Fragment implements IFeedFragmentView {
     @Override
     public void showFeedList(List<FeedItem> list) {
         mFeedList.clear();
+        if (list == null)
+            return;
         mFeedList.addAll(list);
         mFeedAdapter.notifyDataSetChanged();
     }

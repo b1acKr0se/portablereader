@@ -99,6 +99,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             imageViewHolder.descriptionTextView.setText(TextFormatter.removeMultipleLineBreaks(imageViewHolder.feedItem.getDescription()));
             Glide.with(mContext)
                     .load(imageViewHolder.feedItem.getImage())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {

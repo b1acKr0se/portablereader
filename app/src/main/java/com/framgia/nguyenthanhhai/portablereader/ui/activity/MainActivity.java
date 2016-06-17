@@ -92,6 +92,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
         FeedFragment fragment = FeedFragment.newInstance(url);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.fade_in, R.anim.slide_out_right);
         fragmentTransaction.replace(R.id.container, fragment);
         fragmentTransaction.commit();
     }

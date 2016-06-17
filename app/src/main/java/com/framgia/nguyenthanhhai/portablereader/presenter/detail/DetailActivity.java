@@ -1,7 +1,6 @@
 package com.framgia.nguyenthanhhai.portablereader.presenter.detail;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -11,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.customtabs.CustomTabsClient;
 import android.support.customtabs.CustomTabsIntent;
-import android.support.customtabs.CustomTabsServiceConnection;
 import android.support.customtabs.CustomTabsSession;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -22,6 +20,8 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.transition.AutoTransition;
+import android.transition.Explode;
 import android.transition.Slide;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -32,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.framgia.nguyenthanhhai.portablereader.R;
@@ -44,13 +45,9 @@ import com.framgia.nguyenthanhhai.portablereader.util.TextFormatter;
 public class DetailActivity extends BaseActivity implements View.OnClickListener {
     static final String EXTRA_IMAGE = "com.framgia.nguyenthanhhai.extraImage";
     static final String EXTRA_FEED = "com.framgia.nguyenthanhhai.extraFeed";
-    public static final String CUSTOM_TAB_PACKAGE_NAME = "com.android.chrome";
     static final int TYPE_TEXT = 0;
     static final int TYPE_IMAGE = 1;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
-    private AppBarLayout mAppBarLayout;
-    private CustomTabsClient mClient;
-    private CustomTabsSession mCustomTabsSession;
     private CustomTabsIntent customTabsIntent;
     private FeedItem mFeedItem;
     private int layoutType;
@@ -106,7 +103,7 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
     protected void bindViews() {
         ViewCompat.setTransitionName(findViewById(R.id.app_bar_layout), EXTRA_IMAGE);
         supportPostponeEnterTransition();
-        mAppBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
+        AppBarLayout mAppBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
         mAppBarLayout.addOnOffsetChangedListener(new AppBarStateListener() {
             @Override
             public void onStateChanged(AppBarLayout appBarLayout, State state) {
@@ -117,7 +114,6 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.read_article));
-        setupChromeCustomTab();
         mFeedItem = (FeedItem) getIntent().getSerializableExtra(EXTRA_FEED);
         if (layoutType == TYPE_IMAGE) {
             mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
@@ -126,6 +122,7 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
             final ImageView imageView = (ImageView) findViewById(R.id.image);
             Glide.with(this).load(mFeedItem.getImage())
                     .asBitmap()
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .into(new BitmapImageViewTarget(imageView) {
                         @Override
                         public void onLoadFailed(Exception e, Drawable errorDrawable) {
@@ -170,6 +167,7 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
             case R.id.button_favorite:
                 break;
             case R.id.button_share:
+                openShareOption();
                 break;
         }
     }
@@ -183,6 +181,14 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
                         startActivity(intent);
                     }
                 });
+    }
+
+    private void openShareOption() {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, mFeedItem.getTitle() + " - " + mFeedItem.getLink());
+        sendIntent.setType("text/plain");
+        this.startActivity(sendIntent);
     }
 
     @Override
@@ -202,7 +208,7 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
         supportStartPostponedEnterTransition();
         String hexColor = String.format("#%06X", (0xFFFFFF & palette.getMutedColor(primary)));
         int color = Color.parseColor(hexColor);
-        customTabsIntent = new CustomTabsIntent.Builder(mCustomTabsSession)
+        customTabsIntent = new CustomTabsIntent.Builder(null)
                 .setToolbarColor(color)
                 .setShowTitle(true)
                 .build();
@@ -210,14 +216,10 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
 
     private void setActivityTransition() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Slide transition = new Slide();
+            Explode transition = new Explode();
             transition.excludeTarget(android.R.id.statusBarBackground, true);
             getWindow().setEnterTransition(transition);
             getWindow().setReturnTransition(transition);
         }
-    }
-
-    private void setupChromeCustomTab() {
-
     }
 }
