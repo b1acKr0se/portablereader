@@ -17,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
@@ -40,6 +41,7 @@ import com.framgia.nguyenthanhhai.portablereader.data.model.FeedItem;
 import com.framgia.nguyenthanhhai.portablereader.ui.activity.BaseActivity;
 import com.framgia.nguyenthanhhai.portablereader.ui.customtabs.CustomTabActivityHelper;
 import com.framgia.nguyenthanhhai.portablereader.util.DateDifferenceConverter;
+import com.framgia.nguyenthanhhai.portablereader.util.HardwareUtils;
 import com.framgia.nguyenthanhhai.portablereader.util.TextFormatter;
 
 public class DetailActivity extends BaseActivity implements View.OnClickListener {
@@ -141,6 +143,12 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
                             });
                         }
                     });
+        }
+        NestedScrollView scrollView = (NestedScrollView) findViewById(R.id.scroll_view);
+        if (HardwareUtils.hasSoftKeys(getWindowManager())) {
+            scrollView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.scroll_view_padding_bottom));
+        } else {
+            scrollView.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.padding_8dp));
         }
         TextView titleTextView = (TextView) findViewById(R.id.text_title);
         titleTextView.setText(mFeedItem.getTitle());

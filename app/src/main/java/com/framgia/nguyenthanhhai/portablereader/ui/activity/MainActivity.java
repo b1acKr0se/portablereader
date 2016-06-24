@@ -2,6 +2,7 @@ package com.framgia.nguyenthanhhai.portablereader.ui.activity;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.OnApplyWindowInsetsListener;
@@ -37,23 +38,23 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemSele
 
     @Override
     protected void bindViews() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            toolbar.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            mToolbar.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
-
         View spinnerContainer = LayoutInflater.from(this).inflate(R.layout.toolbar_spinner,
-                toolbar, false);
+                mToolbar, false);
         ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        toolbar.addView(spinnerContainer, lp);
+        mToolbar.addView(spinnerContainer, lp);
         CategoryAdapter spinnerAdapter = new CategoryAdapter(this);
         spinnerAdapter.addItems(mCategoryList);
         Spinner spinner = (Spinner) spinnerContainer.findViewById(R.id.toolbar_spinner);
         spinner.setAdapter(spinnerAdapter);
         spinner.setOnItemSelectedListener(MainActivity.this);
     }
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

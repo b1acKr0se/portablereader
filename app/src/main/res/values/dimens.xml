@@ -20,4 +20,6 @@
     <dimen name="fab_elevation">6dp</dimen>
     <dimen name="fab_press_translation">12dp</dimen>
     <dimen name="image_height">200dp</dimen>
+    <dimen name="recycler_padding_bottom">56dp</dimen>
+    <dimen name="scroll_view_padding_bottom">48dp</dimen>
 </resources>
