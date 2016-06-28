@@ -19,13 +19,13 @@ public class FeedDao extends DbContentProvider {
     }
 
     public void insertFeeds(List<FeedItem> list, String category) {
-        database.delete(Db.TABLE_FEED,  Db.FEED_CATEGORY + " = ?",  new String[]{category});
+        database.delete(Db.TABLE_FEED, Db.FEED_CATEGORY + " = ?", new String[]{category});
         for (FeedItem item : list) {
             insertFeed(item);
         }
     }
 
-    public boolean insertFeed(FeedItem item) {
+    private boolean insertFeed(FeedItem item) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(Db.FEED_TITLE, item.getTitle());
         contentValues.put(Db.FEED_DESC, item.getDescription());
@@ -34,6 +34,7 @@ public class FeedDao extends DbContentProvider {
         contentValues.put(Db.FEED_AUTHOR, item.getAuthor());
         contentValues.put(Db.FEED_IMAGE, item.getImage());
         contentValues.put(Db.FEED_CATEGORY, item.getCategory());
+        contentValues.put(Db.FEED_SAVE_DATE, item.getSaveDate());
         try {
             database.insertOrThrow(Db.TABLE_FEED, null, contentValues);
         } catch (SQLException e) {
@@ -75,7 +76,7 @@ public class FeedDao extends DbContentProvider {
         }
     }
 
-    public boolean isFavorited(FeedItem item) {
+    private boolean isFavorited(FeedItem item) {
         String selection = Db.FAVORITE_TITLE + " = ?";
         String[] selectionArgs = new String[]{item.getTitle()};
         Cursor cursor = database.query(Db.TABLE_FAVORITE,
@@ -122,10 +123,14 @@ public class FeedDao extends DbContentProvider {
         }
     }
 
-    public void isOutdated(FeedItem feedItem) {
-        if (DateDifferenceConverter.isOutdated(feedItem.getPubDate())) {
-            remove(feedItem);
-        }
+    public boolean isOutdated(List<FeedItem> list) {
+        for (FeedItem item : list)
+            if (isOutdated(item)) return true;
+        return false;
+    }
+
+    private boolean isOutdated(FeedItem feedItem) {
+        return DateDifferenceConverter.isOutdated(feedItem.getSaveDate());
     }
 
     public void remove(FeedItem feedItem) {

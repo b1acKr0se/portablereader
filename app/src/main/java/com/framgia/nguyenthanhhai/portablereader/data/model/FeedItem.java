@@ -19,6 +19,7 @@ public class FeedItem implements Serializable {
     private String mCategory;
     private String mAuthor;
     private String mImage;
+    private String mSaveDate;
     private boolean mIsRead;
     private boolean mIsFavorited;
 
@@ -35,6 +36,7 @@ public class FeedItem implements Serializable {
         mPubDate = cursor.getString(cursor.getColumnIndexOrThrow(Db.FEED_PUB_DATE));
         mCategory = cursor.getString(cursor.getColumnIndexOrThrow(Db.FEED_CATEGORY));
         mImage = cursor.getString(cursor.getColumnIndexOrThrow(Db.FEED_IMAGE));
+        mSaveDate = cursor.getString(cursor.getColumnIndexOrThrow(Db.FEED_SAVE_DATE));
     }
 
     public void setId(int mId) {
@@ -99,6 +101,14 @@ public class FeedItem implements Serializable {
 
     public String getImage() {
         return mImage;
+    }
+
+    public String getSaveDate() {
+        return mSaveDate;
+    }
+
+    public void setSaveDate(String mSaveDate) {
+        this.mSaveDate = mSaveDate;
     }
 
     public boolean isRead() {
@@ -167,6 +177,11 @@ public class FeedItem implements Serializable {
 
         public FeedItemBuilder setImage(String image) {
             mFeedItem.setImage(image);
+            return this;
+        }
+
+        public FeedItemBuilder setSaveDate(String date) {
+            mFeedItem.setSaveDate(date);
             return this;
         }
 

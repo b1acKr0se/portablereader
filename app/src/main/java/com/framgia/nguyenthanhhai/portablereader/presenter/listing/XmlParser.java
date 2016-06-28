@@ -3,6 +3,7 @@ package com.framgia.nguyenthanhhai.portablereader.presenter.listing;
 import android.util.Xml;
 
 import com.framgia.nguyenthanhhai.portablereader.data.model.FeedItem;
+import com.framgia.nguyenthanhhai.portablereader.util.DateDifferenceConverter;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -100,7 +101,8 @@ public class XmlParser {
                 .setLink(link)
                 .setPubDate(pubDate)
                 .setImage(image)
-                .setAuthor(author).build();
+                .setAuthor(author)
+                .setSaveDate(DateDifferenceConverter.getCurrentDate()).build();
     }
 
     private static String readTitle(XmlPullParser parser) throws IOException,
