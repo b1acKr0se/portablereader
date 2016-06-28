@@ -17,11 +17,13 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.framgia.nguyenthanhhai.portablereader.R;
+import com.framgia.nguyenthanhhai.portablereader.app.App;
 import com.framgia.nguyenthanhhai.portablereader.data.local.FeedDao;
 import com.framgia.nguyenthanhhai.portablereader.data.model.FeedItem;
 import com.framgia.nguyenthanhhai.portablereader.presenter.detail.DetailActivity;
 import com.framgia.nguyenthanhhai.portablereader.ui.activity.MainActivity;
 import com.framgia.nguyenthanhhai.portablereader.util.HardwareUtils;
+import com.squareup.leakcanary.RefWatcher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,5 +131,11 @@ public class FeedFragment extends Fragment implements IFeedFragmentView {
         feedItem.setReadStatus(true);
         view.findViewById(R.id.text_desc).setVisibility(View.GONE);
         DetailActivity.navigate((AppCompatActivity) getActivity(), view.findViewById(R.id.image_feed), feedItem);
+    }
+
+    @Override public void onDestroy() {
+        super.onDestroy();
+        RefWatcher refWatcher = App.getRefWatcher(getContext());
+        refWatcher.watch(this);
     }
 }

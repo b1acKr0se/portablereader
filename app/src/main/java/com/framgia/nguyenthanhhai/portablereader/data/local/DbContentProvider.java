@@ -4,12 +4,12 @@ import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-public abstract class DbContentProvider {
-    public SQLiteDatabase database;
+abstract class DbContentProvider {
+    SQLiteDatabase database;
     private DatabaseHelper mDatabaseHelper;
     private Context mContext;
 
-    public DbContentProvider(Context context) {
+    DbContentProvider(Context context) {
         this.mContext = context;
         mDatabaseHelper = DatabaseHelper.getDatabaseHelper(mContext);
         open();
