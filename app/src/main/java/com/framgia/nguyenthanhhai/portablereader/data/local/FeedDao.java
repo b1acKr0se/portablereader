@@ -49,7 +49,9 @@ public class FeedDao extends DbContentProvider {
         String[] selectionArgs = new String[]{item.getTitle(), item.getAuthor()};
         Cursor cursor = database.query(Db.TABLE_FEED,
                 null, selection, selectionArgs, null, null, null, null);
-        return cursor != null && cursor.getCount() > 0;
+        boolean result = cursor != null && cursor.getCount() > 0;
+        if (cursor != null) cursor.close();
+        return result;
     }
 
     public void insertRead(FeedItem item) {
@@ -81,7 +83,9 @@ public class FeedDao extends DbContentProvider {
         String[] selectionArgs = new String[]{item.getTitle()};
         Cursor cursor = database.query(Db.TABLE_FAVORITE,
                 null, selection, selectionArgs, null, null, null, null);
-        return cursor != null && cursor.getCount() > 0;
+        boolean result = cursor != null && cursor.getCount() > 0;
+        if (cursor != null) cursor.close();
+        return result;
     }
 
     public boolean isRead(FeedItem item) {
@@ -89,7 +93,9 @@ public class FeedDao extends DbContentProvider {
         String[] selectionArgs = new String[]{item.getTitle()};
         Cursor cursor = database.query(Db.TABLE_READ,
                 null, selection, selectionArgs, null, null, null, null);
-        return cursor != null && cursor.getCount() > 0;
+        boolean result = cursor != null && cursor.getCount() > 0;
+        if (cursor != null) cursor.close();
+        return result;
     }
 
     public List<FeedItem> getFeedList(String category) {
@@ -108,7 +114,7 @@ public class FeedDao extends DbContentProvider {
             cursor.close();
             return list;
         }
-        cursor.close();
+        if (cursor != null) cursor.close();
         return null;
     }
 
@@ -121,6 +127,7 @@ public class FeedDao extends DbContentProvider {
                 isOutdated(feedItem);
             }
         }
+        if (cursor != null) cursor.close();
     }
 
     public boolean isOutdated(List<FeedItem> list) {
