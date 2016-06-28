@@ -16,53 +16,90 @@ import java.io.IOException;
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Func0;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
-public class FeedCrawler implements IFeedCrawler {
+class FeedCrawler implements IFeedCrawler {
     private final OkHttpClient mOkhttpClient = new OkHttpClient();
     private String mUrl;
     private FeedDao mFeedDao;
+    private String mCategory;
 
-    public FeedCrawler(Context context, String url) {
+    FeedCrawler(Context context, String url) {
         this.mUrl = url;
         mFeedDao = new FeedDao(context);
     }
 
     @Override
     public Observable<List<FeedItem>> getFeedList() {
-        return Observable.defer(new Func0<Observable<List<FeedItem>>>() {
-            @Override
-            public Observable<List<FeedItem>> call() {
-                try {
-                    return Observable.just(get());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return Observable.just(getCacheData());
-                }
-            }
-        });
+        return Observable.concat(disk(), network())
+                .takeFirst(new Func1<List<FeedItem>, Boolean>() {
+                    @Override public Boolean call(List<FeedItem> feedItems) {
+                        return feedItems != null && !isOutdated(feedItems);
+                    }
+                });
     }
 
-    private List<FeedItem> get() throws IOException, XmlPullParserException {
+    private List<FeedItem> makeNetworkRequest() throws IOException, XmlPullParserException {
         Request request = new Request.Builder()
                 .url(mUrl)
                 .build();
         Response response = mOkhttpClient.newCall(request).execute();
         String xml = response.body().string();
         List<FeedItem> list = XmlParser.parse(xml);
-        String category = getCategoryFromUrl(mUrl);
+        mCategory = getCategoryFromUrl(mUrl);
         for (FeedItem item : list) {
-            item.setCategory(category);
+            item.setCategory(mCategory);
             item.setReadStatus(mFeedDao.isRead(item));
-        }
-        if (!list.isEmpty()) {
-            mFeedDao.insertFeeds(list, category);
         }
         return list;
     }
 
     private List<FeedItem> getCacheData() {
         return mFeedDao.getFeedList(getCategoryFromUrl(mUrl));
+    }
+
+
+    private Observable<List<FeedItem>> disk() {
+        return Observable.create(new Observable.OnSubscribe<List<FeedItem>>() {
+            @Override public void call(Subscriber<? super List<FeedItem>> subscriber) {
+                subscriber.onNext(getCacheData());
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    private Observable<List<FeedItem>> network() {
+        Observable<List<FeedItem>> network = Observable.create(new Observable.OnSubscribe<List<FeedItem>>() {
+            @Override public void call(Subscriber<? super List<FeedItem>> subscriber) {
+                try {
+                    List<FeedItem> list = makeNetworkRequest();
+                    subscriber.onNext(list);
+                    subscriber.onCompleted();
+                } catch (IOException | XmlPullParserException e) {
+                    e.printStackTrace();
+                    subscriber.onError(e);
+                }
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+        return network.doOnNext(new Action1<List<FeedItem>>() {
+            @Override public void call(List<FeedItem> feedItems) {
+                saveToDisk(feedItems);
+            }
+        });
+    }
+
+    private boolean isOutdated(List<FeedItem> list) {
+        return list == null || list.size() == 0 || mFeedDao.isOutdated(list);
+    }
+
+    private void saveToDisk(List<FeedItem> list) {
+        if (list != null && !list.isEmpty()) {
+            mFeedDao.insertFeeds(list, mCategory);
+        }
     }
 
     private String getCategoryFromUrl(String url) {

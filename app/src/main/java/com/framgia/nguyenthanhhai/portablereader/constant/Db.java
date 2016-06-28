@@ -15,6 +15,7 @@ public class Db {
     public static final String FEED_CATEGORY = "category";
     public static final String FEED_AUTHOR = "author";
     public static final String FEED_IMAGE = "image";
+    public static final String FEED_SAVE_DATE = "save_date";
 
     //table read columns
     public static final String READ_ID = "_id";
@@ -27,7 +28,7 @@ public class Db {
     public static final String CREATE_TABLE_FEED = "CREATE TABLE " + TABLE_FEED
             + "(" + FEED_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + FEED_TITLE + " TEXT, " + FEED_DESC + " TEXT, " + FEED_LINK + " TEXT, "
-            + FEED_PUB_DATE + " TEXT, " + FEED_CATEGORY + " TEXT, "
+            + FEED_PUB_DATE + " TEXT, " + FEED_CATEGORY + " TEXT, " + FEED_SAVE_DATE + " TEXT, "
             + FEED_AUTHOR + " TEXT, " + FEED_IMAGE + " TEXT)";
     public static final String CREATE_TABLE_READ = "CREATE TABLE " + TABLE_READ
             + "(" + READ_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
